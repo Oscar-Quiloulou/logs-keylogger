@@ -20,6 +20,56 @@
     <pre id="log-content"></pre>
 
     <script>
+        // --- Configuration ---
         // Remplacez par VOS identifiants
-        const BIN_ID = "6936d04a43b1c97be9dfacb1";
-        // Pour la clé API, il est plus sûr d'utiliser une clé en lecture seule si
+        const BIN_ID = "6936d04a43b1c97be9dfacb1"; // <--- REMPLACEZ CECI PAR L'ID DE VOTRE BIN
+        const API_KEY = "$2a$10$NmWtedhMFgVwPoNcmy7Aae0s0y9Yn.m9vfmLl/J5FK.B52.50V6kG";
+        const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}/latest`;
+
+        const statusElement = document.getElementById('status');
+        const logContentElement = document.getElementById('log-content');
+
+        async function fetchLogs() {
+            try {
+                statusElement.textContent = "Récupération des logs...";
+                statusElement.className = "status";
+
+                const response = await fetch(JSONBIN_URL, {
+                    headers: {
+                        'X-Master-Key': API_KEY
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                const logs = data.record.logs;
+
+                if (logs) {
+                    logContentElement.textContent = logs;
+                    statusElement.textContent = `Logs mis à jour: ${new Date().toLocaleTimeString()}`;
+                } else {
+                    logContentElement.textContent = "Aucun log trouvé.";
+                    statusElement.textContent = "Aucun log à afficher.";
+                }
+
+            } catch (error) {
+                console.error("Impossible de récupérer les logs:", error);
+                statusElement.textContent = `Erreur: ${error.message}. Vérifiez l'ID du bin et la clé API.`;
+                statusElement.className = "status error";
+                logContentElement.textContent = "Échec du chargement.";
+            }
+        }
+
+        // Récupérer les logs au chargement de la page
+        fetchLogs();
+
+        // Optionnel: Actualiser les logs toutes les 30 secondes
+        setInterval(fetchLogs, 30000);
+
+    </script>
+
+</body>
+</html>
