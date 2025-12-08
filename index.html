@@ -21,9 +21,9 @@
 
     <script>
         // --- Configuration ---
-        // Remplacez par VOS identifiants
         const BIN_ID = "6936d04a43b1c97be9dfacb1"; // <--- REMPLACEZ CECI PAR L'ID DE VOTRE BIN
-        const API_KEY = "$2a$10$NmWtedhMFgVwPoNcmy7Aae0s0y9Yn.m9vfmLl/J5FK.B52.50V6kG";
+        // IMPORTANT: Utilisez ici la clé d'accès en lecture seule (X-Access-Key)
+        const API_KEY = "$2a$10$NmWtedhMFgVwPoNcmy7Aae0s0y9Yn.m9vfmLl/J5FK.B52.50V6kG"; // <--- REMPLACEZ CECI PAR VOTRE CLÉ D'ACCÈS EN LECTURE SEULE
         const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}/latest`;
 
         const statusElement = document.getElementById('status');
@@ -36,7 +36,7 @@
 
                 const response = await fetch(JSONBIN_URL, {
                     headers: {
-                        'X-Master-Key': API_KEY
+                        'X-Access-Key': API_KEY // On utilise l'Access Key pour lire
                     }
                 });
 
