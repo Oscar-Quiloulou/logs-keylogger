@@ -2,82 +2,76 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualiseur de Logs</title>
+    <title>Accès secret</title>
     <style>
-        body { font-family: 'Courier New', Courier, monospace; background-color: #1e1e1e; color: #d4d4d4; margin: 20px; }
-        h1 { color: #569cd6; }
-        pre { background-color: #252526; padding: 15px; border-radius: 5px; white-space: pre-wrap; word-wrap: break-word; border: 1px solid #3e3e42; }
-        .status { color: #4ec9b0; margin-bottom: 20px; font-weight: bold; }
-        .error { color: #f44747; }
-        .empty { color: #cccccc; font-style: italic; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #222;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px #0f0;
+        }
+
+        input[type="password"] {
+            padding: 8px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+        .message {
+            margin-top: 10px;
+            min-height: 20px;
+        }
     </style>
 </head>
 <body>
-
-    <h1>Visualiseur de Logs Clavier</h1>
-    <p class="status" id="status">Chargement des logs...</p>
-
-    <pre id="log-content">En attente de données...</pre>
+    <div class="container">
+        <h2>Zone ultra secrète 🕶️</h2>
+        <p>Entre le mot de passe :</p>
+        <input type="password" id="passwordInput" placeholder="Mot de passe">
+        <button onclick="checkPassword()">Valider</button>
+        <div class="message" id="message"></div>
+    </div>
 
     <script>
-        // --- Configuration ---
-        const BIN_ID = "VOTRE_BIN_ID"; // <--- ASSUREZ-VOUS QUE C'EST BON
-        // IMPORTANT: Utilisez ici la clé d'accès en lecture seule (X-Access-Key)
-        const API_KEY = "VOTRE_X_ACCESS_KEY"; // <--- ASSUREZ-VOUS QUE C'EST BON
-        const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}/latest`;
+        // Mot de passe "au hasard" choisi par moi
+        const CORRECT_PASSWORD = "482917";
 
-        const statusElement = document.getElementById('status');
-        const logContentElement = document.getElementById('log-content');
+        function checkPassword() {
+            const input = document.getElementById("passwordInput");
+            const message = document.getElementById("message");
+            const entered = input.value;
 
-        async function fetchLogs() {
-            try {
-                statusElement.textContent = "Récupération des logs...";
-                statusElement.className = "status";
+            // On reset la couleur de fond au cas où
+            document.body.style.backgroundColor = "#111";
 
-                const response = await fetch(JSONBIN_URL, {
-                    headers: {
-                        'X-Access-Key': API_KEY // Utiliser X-Access-Key pour la lecture seule
-                    }
-                });
-
-                if (!response.ok) {
-                    // Gère les erreurs HTTP comme 401, 404, etc.
-                    const errorText = await response.text();
-                    throw new Error(`Erreur HTTP: ${response.status} ${response.statusText}. Réponse: ${errorText}`);
-                }
-
-                const data = await response.json();
-
-                // Vérifie si la réponse contient bien les données attendues
-                if (data.record && typeof data.record.logs !== 'undefined') {
-                    const logs = data.record.logs;
-                    if (logs && logs.trim() !== "") {
-                        logContentElement.textContent = logs;
-                        statusElement.textContent = `Dernière mise à jour: ${new Date().toLocaleTimeString()}`;
-                    } else {
-                        logContentElement.innerHTML = '<span class="empty">Le conteneur de logs est vide.</span>';
-                        statusElement.textContent = "Aucun log à afficher pour le moment.";
-                    }
-                } else {
-                    // La structure du JSON est incorrecte
-                    throw new Error("La structure du JSON est invalide. La clé 'logs' est manquante.");
-                }
-
-            } catch (error) {
-                console.error("Impossible de récupérer les logs:", error);
-                statusElement.innerHTML = `<span class="error">Erreur: ${error.message}</span>`;
-                logContentElement.textContent = "Échec du chargement des données.";
+            if (entered === CORRECT_PASSWORD) {
+                // Mot de passe correct -> on redirige vers la page verte
+                window.location.href = "success.html";
+            } else {
+                // Mot de passe faux -> fond rouge
+                document.body.style.backgroundColor = "red";
+                message.textContent = "Mot de passe incorrect 🚫";
             }
         }
 
-        // Récupérer les logs au chargement de la page
-        fetchLogs();
-
-        // Actualiser les logs toutes les 30 secondes
-        setInterval(fetchLogs, 30000);
-
+        // Exemple : pré-remplir l'input (tu peux enlever si tu veux)
+        // document.getElementById("passwordInput").value = "test";
     </script>
-
 </body>
 </html>
