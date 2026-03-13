@@ -62,40 +62,20 @@
             message.textContent = "Chargement...";
 
             try {
-                // 1. Récupérer le token CSRF
-                const csrfReq = await fetch(`${BACKEND_URL}/index.php`, {
-                    credentials: "include"
-                });
-                const csrfText = await csrfReq.text();
-
-                const match = csrfText.match(/name="csrf" value="([a-f0-9]+)"/i);
-                if (!match) {
-                    message.textContent = "Impossible de récupérer le token CSRF";
-                    return;
-                }
-                const csrf = match[1];
-
-                // 2. Envoyer le mot de passe + CSRF
                 const formData = new FormData();
                 formData.append("password", pwd);
-                formData.append("csrf", csrf);
 
                 const loginReq = await fetch(`${BACKEND_URL}/login.php`, {
                     method: "POST",
-                    body: formData,
-                    credentials: "include"
+                    body: formData
                 });
 
                 const result = await loginReq.text();
 
                 if (result === "OK") {
                     window.location.href = "success.html";
-                } else if (result === "NO") {
-                    message.textContent = "Mot de passe incorrect 🚫";
-                } else if (result === "CSRF_INVALID") {
-                    message.textContent = "Erreur CSRF ⚠️";
                 } else {
-                    message.textContent = "Erreur serveur";
+                    message.textContent = "Mot de passe incorrect 🚫";
                 }
 
             } catch (err) {
