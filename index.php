@@ -1,4 +1,11 @@
 <?php
+header("Access-Control-Allow-Origin: https://oscar-quiloulou.github.io");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST, GET");
+session_start();
+?>
+<?php
 session_start();
 
 // Génération d’un token CSRF unique
