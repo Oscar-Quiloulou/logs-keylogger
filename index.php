@@ -1,4 +1,8 @@
 <?php
+// Autoriser les cookies cross-site pour la session PHP
+ini_set('session.cookie_samesite', 'None');
+ini_set('session.cookie_secure', '1');
+
 header("Access-Control-Allow-Origin: https://oscar-quiloulou.github.io");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -16,8 +20,6 @@ $_SESSION['csrf'] = bin2hex(random_bytes(16));
     <title>Backend CSRF</title>
 </head>
 <body>
-    <form>
-        <input type="hidden" name="csrf" value="<?php echo $_SESSION['csrf']; ?>">
-    </form>
+    <input type="hidden" name="csrf" value="<?php echo $_SESSION['csrf']; ?>">
 </body>
 </html>

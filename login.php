@@ -1,4 +1,8 @@
 <?php
+// Autoriser les cookies cross-site pour la session PHP
+ini_set('session.cookie_samesite', 'None');
+ini_set('session.cookie_secure', '1');
+
 header("Access-Control-Allow-Origin: https://oscar-quiloulou.github.io");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -17,8 +21,6 @@ if (!isset($_POST['csrf']) || $_POST['csrf'] !== $_SESSION['csrf']) {
 // Vérification du mot de passe
 if (isset($_POST['password']) && $_POST['password'] === $CORRECT_PASSWORD) {
     echo "OK";
-    exit;
 } else {
     echo "NO";
-    exit;
 }
