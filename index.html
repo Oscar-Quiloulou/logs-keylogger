@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Accès secret</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #222;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px #0f0;
+        }
+
+        input[type="password"] {
+            padding: 8px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+        .message {
+            margin-top: 10px;
+            min-height: 20px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Zone ultra secrète 🕶️</h2>
+        <p>Entre le mot de passe :</p>
+
+        <input type="password" id="passwordInput" placeholder="Mot de passe">
+        <button onclick="sendPassword()">Valider</button>
+
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        const BACKEND_URL = "https://glorious-waffle-5gx5v6pprj6vc4xgv-8000.app.github.dev";
+
+        async function sendPassword() {
+            const message = document.getElementById("message");
+            const pwd = document.getElementById("passwordInput").value;
+
+            message.textContent = "Chargement...";
+
+            try {
+                // 1. Récupérer le token CSRF depuis le backend
+                const csrfReq = await fetch(`${BACKEND_URL}/index.php`);
+                const csrfText = await csrfReq.text();
+
+                // Extraire le token CSRF du HTML
+                const match = csrfText.match(/name="csrf" value="([a-f0-9]+)"/i);
+                if (!match) {
+                    message.textContent = "Impossible de récupérer le token CSRF";
+                    return;
+                }
+                const csrf = match[1];
+
+                // 2. Envoyer le mot de passe + token CSRF
+                const formData = new FormData();
+                formData.append("password", pwd);
+                formData.append("csrf", csrf);
+
+                const loginReq = await fetch(`${BACKEND_URL}/login.php`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                // 3. Vérifier la réponse
+                if (loginReq.redirected) {
+                    if (loginReq.url.includes("success.html")) {
+                        window.location.href = loginReq.url;
+                    } else {
+                        message.textContent = "Mot de passe incorrect 🚫";
+                    }
+                } else {
+                    message.textContent = "Erreur serveur";
+                }
+
+            } catch (err) {
+                message.textContent = "Erreur de connexion au serveur";
+            }
+        }
+    </script>
+
+</body>
+</html>
