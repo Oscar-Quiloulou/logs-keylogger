@@ -63,7 +63,9 @@
 
             try {
                 // 1. Récupérer le token CSRF depuis le backend
-                const csrfReq = await fetch(`${BACKEND_URL}/index.php`);
+                const csrfReq = await fetch(`${BACKEND_URL}/index.php`, {
+                    credentials: "include"
+                });
                 const csrfText = await csrfReq.text();
 
                 // Extraire le token CSRF du HTML
@@ -81,16 +83,19 @@
 
                 const loginReq = await fetch(`${BACKEND_URL}/login.php`, {
                     method: "POST",
-                    body: formData
+                    body: formData,
+                    credentials: "include"
                 });
 
+                const result = await loginReq.text();
+
                 // 3. Vérifier la réponse
-                if (loginReq.redirected) {
-                    if (loginReq.url.includes("success.html")) {
-                        window.location.href = loginReq.url;
-                    } else {
-                        message.textContent = "Mot de passe incorrect 🚫";
-                    }
+                if (result === "OK") {
+                    window.location.href = "success.html";
+                } else if (result === "NO") {
+                    message.textContent = "Mot de passe incorrect 🚫";
+                } else if (result === "CSRF_INVALID") {
+                    message.textContent = "Erreur CSRF ⚠️";
                 } else {
                     message.textContent = "Erreur serveur";
                 }
